@@ -148,7 +148,7 @@ export default function Task({
               alignContent: "center",
             }}
             onPress={() => onDecrement(task.name)}
-            disabled={task.count === 0}
+            disabled={task.count < 1}
           >
             <FontAwesome6 name="minus" size={24} color="black" />
           </TouchableOpacity>
@@ -168,6 +168,7 @@ export default function Task({
               alignContent: "center",
             }}
             onPress={() => onIncrement(task.name)}
+            disabled={task.count >= 99}
           >
             <FontAwesome6 name="add" size={24} color="black" />
           </TouchableOpacity>

@@ -1,28 +1,36 @@
 import { FontAwesome6 } from "@expo/vector-icons";
 import uuid from "react-native-uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import Task, { TaskType } from "./components/task";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
+import { StatusBar } from "expo-status-bar";
 
 const storeData = async (value) => {
   try {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem("my-items", jsonValue);
-    console.log("Data saved");
+    console.log("Data Saved");
   } catch (e) {
     // saving error
+    console.log(e);
   }
 };
 
 const getData = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem("my-items");
-    console.log("Data retrieved");
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
     // error reading value
+    console.log(e);
   }
 };
 
@@ -39,73 +47,83 @@ export default function App() {
 
   const onNameChange = (name: string, newName: string) => {
     if (newName === name) return;
-    setTasks(
-      tasks.map((task) => {
-        if (task.name === name) {
-          return { ...task, name: newName };
-        } else {
-          return task;
-        }
-      }),
-    );
-    storeData(tasks);
+    const newTasks = tasks.map((task) => {
+      if (task.name === name) {
+        return { ...task, name: newName };
+      } else {
+        return task;
+      }
+    });
+    storeData(newTasks);
+    setTasks(newTasks);
   };
 
   const onIncrement = (name: string) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.name === name) {
-          return { ...task, count: task.count + 1 };
-        } else {
-          return task;
-        }
-      }),
-    );
-    storeData(tasks);
+    const newTasks = tasks.map((task) => {
+      if (task.name === name) {
+        return { ...task, count: task.count + 1 };
+      } else {
+        return task;
+      }
+    });
+    storeData(newTasks);
+    setTasks(newTasks);
   };
 
   const onDecrement = (name: string) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.name === name) {
-          return { ...task, count: task.count - 1 };
-        } else {
-          return task;
-        }
-      }),
-    );
-    storeData(tasks);
+    const newTasks = tasks.map((task) => {
+      if (task.name === name) {
+        return { ...task, count: task.count - 1 };
+      } else {
+        return task;
+      }
+    });
+    storeData(newTasks);
+    setTasks(newTasks);
   };
 
   const onDelete = (name: string) => {
-    setTasks(tasks.filter((task) => task.name !== name));
-    storeData(tasks);
+    const newTasks = tasks.filter((task) => task.name !== name);
+    storeData(newTasks);
+    setTasks(newTasks);
   };
 
   const onAddTask = () => {
-    setTasks([
+    const newTasks = [
       ...tasks,
       { name: `Task ${tasks.length + 1}`, count: 0, id: uuid.v4().toString() },
-    ]);
-    storeData(tasks);
+    ];
+    storeData(newTasks);
+    setTasks(newTasks);
   };
+  console.log(tasks.length);
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <FlatList
-          data={tasks}
-          renderItem={({ item }) => (
-            <Task
-              task={item}
-              onDeleteTask={onDelete}
-              onIncrement={onIncrement}
-              onDecrement={onDecrement}
-              onEditTask={onNameChange}
-            />
-          )}
-          keyExtractor={(item) => item.name}
-        />
+        {tasks.length === 0 ? (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <Text style={{ color: "black", fontSize: 24 }}>
+              Create Your First Task
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={tasks}
+            renderItem={({ item }) => (
+              <Task
+                task={item}
+                onDeleteTask={onDelete}
+                onIncrement={onIncrement}
+                onDecrement={onDecrement}
+                onEditTask={onNameChange}
+              />
+            )}
+            keyExtractor={(item) => item.name}
+          />
+        )}
         <TouchableOpacity
           style={{
             position: "absolute",
@@ -130,6 +148,7 @@ export default function App() {
           </View>
         </TouchableOpacity>
       </SafeAreaView>
+      <StatusBar style="dark" translucent={true} hidden={false} />
     </SafeAreaProvider>
   );
 }
