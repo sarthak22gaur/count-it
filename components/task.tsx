@@ -127,7 +127,7 @@ export default function Task({
               alignItems: "center",
               alignContent: "center",
             }}
-            onPress={() => onDeleteTask(task.name)}
+            onPress={() => onDeleteTask(task.id)}
           >
             <FontAwesome6 name="trash-can" size={24} color="red" />
           </TouchableOpacity>

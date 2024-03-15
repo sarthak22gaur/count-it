@@ -82,8 +82,8 @@ export default function App() {
     setTasks(newTasks);
   };
 
-  const onDelete = (name: string) => {
-    const newTasks = tasks.filter((task) => task.name !== name);
+  const onDelete = (id: string) => {
+    const newTasks = tasks.filter((task) => task.id !== id);
     storeData(newTasks);
     setTasks(newTasks);
   };
@@ -121,7 +121,7 @@ export default function App() {
                 onEditTask={onNameChange}
               />
             )}
-            keyExtractor={(item) => item.name}
+            keyExtractor={(item) => item.id}
           />
         )}
         <TouchableOpacity
