@@ -17,7 +17,7 @@ export default function Task({
   };
 
   const onSave = () => {
-    onEditTask(task.name, newName);
+    onEditTask(task.id, task.name, newName);
     setEditing(false);
   };
   return (
@@ -147,7 +147,7 @@ export default function Task({
               alignItems: "center",
               alignContent: "center",
             }}
-            onPress={() => onDecrement(task.name)}
+            onPress={() => onDecrement(task.id)}
             disabled={task.count < 1}
           >
             <FontAwesome6 name="minus" size={24} color="black" />
@@ -167,7 +167,7 @@ export default function Task({
               alignItems: "center",
               alignContent: "center",
             }}
-            onPress={() => onIncrement(task.name)}
+            onPress={() => onIncrement(task.id)}
             disabled={task.count >= 99}
           >
             <FontAwesome6 name="add" size={24} color="black" />
@@ -198,5 +198,5 @@ type TaskProps = {
   onIncrement: (name: string) => void;
   onDecrement: (name: string) => void;
   onDeleteTask: (name: string) => void;
-  onEditTask: (name: string, newName: string) => void;
+  onEditTask: (id: string, name: string, newName: string) => void;
 };

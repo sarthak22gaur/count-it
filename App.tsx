@@ -17,10 +17,8 @@ const storeData = async (value) => {
   try {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem("my-items", jsonValue);
-    console.log("Data Saved");
   } catch (e) {
     // saving error
-    console.log(e);
   }
 };
 
@@ -30,7 +28,6 @@ const getData = async () => {
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
     // error reading value
-    console.log(e);
   }
 };
 
@@ -45,10 +42,10 @@ export default function App() {
     });
   }, []);
 
-  const onNameChange = (name: string, newName: string) => {
+  const onNameChange = (id: string, name: string, newName: string) => {
     if (newName === name) return;
     const newTasks = tasks.map((task) => {
-      if (task.name === name) {
+      if (task.id === id) {
         return { ...task, name: newName };
       } else {
         return task;
@@ -58,9 +55,9 @@ export default function App() {
     setTasks(newTasks);
   };
 
-  const onIncrement = (name: string) => {
+  const onIncrement = (id: string) => {
     const newTasks = tasks.map((task) => {
-      if (task.name === name) {
+      if (task.id === id) {
         return { ...task, count: task.count + 1 };
       } else {
         return task;
@@ -70,9 +67,9 @@ export default function App() {
     setTasks(newTasks);
   };
 
-  const onDecrement = (name: string) => {
+  const onDecrement = (id: string) => {
     const newTasks = tasks.map((task) => {
-      if (task.name === name) {
+      if (task.id === id) {
         return { ...task, count: task.count - 1 };
       } else {
         return task;
@@ -96,7 +93,6 @@ export default function App() {
     storeData(newTasks);
     setTasks(newTasks);
   };
-  console.log(tasks.length);
 
   return (
     <SafeAreaProvider>
