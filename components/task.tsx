@@ -67,17 +67,36 @@ export default function Task({
             </View>
           )}
           {editing ? (
-            <TouchableOpacity
+            <View
               style={{
                 width: "30%",
+                flexDirection: "row",
                 alignSelf: "center",
                 padding: 10,
                 alignItems: "center",
               }}
-              onPress={onSave}
             >
-              <FontAwesome6 name="square-check" size={18} color="black" />
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignSelf: "center",
+                  alignItems: "center",
+                  margin: 5,
+                }}
+                onPress={() => setEditing(false)}
+              >
+                <MaterialIcons name="cancel" size={22} color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignSelf: "center",
+                  alignItems: "center",
+                  margin: 5,
+                }}
+                onPress={onSave}
+              >
+                <FontAwesome6 name="square-check" size={22} color="black" />
+              </TouchableOpacity>
+            </View>
           ) : (
             <TouchableOpacity
               style={{
@@ -170,6 +189,7 @@ export default function Task({
 export type TaskType = {
   name: string;
   count: number;
+  id: string;
 };
 
 type TaskProps = {

@@ -1,30 +1,44 @@
-import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import { FontAwesome6 } from "@expo/vector-icons";
+import uuid from "react-native-uuid";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
 import Task, { TaskType } from "./components/task";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const dummyTasks: Array<TaskType> = [
-  { name: "Task 1", count: 0 },
-  { name: "Task 2", count: 0 },
-  { name: "Task 3", count: 0 },
-  { name: "Task 4", count: 0 },
-  { name: "Task 5", count: 0 },
-  { name: "Task 6", count: 0 },
-  { name: "Task 7", count: 0 },
-];
+const storeData = async (value) => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem("my-items", jsonValue);
+    console.log("Data saved");
+  } catch (e) {
+    // saving error
+  }
+};
+
+const getData = async () => {
+  try {
+    const jsonValue = await AsyncStorage.getItem("my-items");
+    console.log("Data retrieved");
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+    // error reading value
+  }
+};
 
 export default function App() {
-  const [tasks, setTasks] = useState<Array<TaskType>>(dummyTasks);
+  const [tasks, setTasks] = useState<Array<TaskType>>([]);
+
+  useEffect(() => {
+    getData().then((data) => {
+      if (data) {
+        setTasks(data);
+      }
+    });
+  }, []);
 
   const onNameChange = (name: string, newName: string) => {
+    if (newName === name) return;
     setTasks(
       tasks.map((task) => {
         if (task.name === name) {
@@ -34,6 +48,7 @@ export default function App() {
         }
       }),
     );
+    storeData(tasks);
   };
 
   const onIncrement = (name: string) => {
@@ -46,6 +61,7 @@ export default function App() {
         }
       }),
     );
+    storeData(tasks);
   };
 
   const onDecrement = (name: string) => {
@@ -58,14 +74,20 @@ export default function App() {
         }
       }),
     );
+    storeData(tasks);
   };
 
   const onDelete = (name: string) => {
     setTasks(tasks.filter((task) => task.name !== name));
+    storeData(tasks);
   };
 
   const onAddTask = () => {
-    setTasks([...tasks, { name: `Task ${tasks.length + 1}`, count: 0 }]);
+    setTasks([
+      ...tasks,
+      { name: `Task ${tasks.length + 1}`, count: 0, id: uuid.v4().toString() },
+    ]);
+    storeData(tasks);
   };
 
   return (
