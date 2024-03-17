@@ -7,6 +7,8 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import Task, { TaskType } from "./components/task";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -33,6 +35,7 @@ const getData = async () => {
 
 export default function App() {
   const [tasks, setTasks] = useState<Array<TaskType>>([]);
+  const [currentEdit, setCurrentEdit] = useState<string | null>(null);
 
   useEffect(() => {
     getData().then((data) => {
@@ -88,7 +91,12 @@ export default function App() {
   const onAddTask = () => {
     const newTasks = [
       ...tasks,
-      { name: `Task ${tasks.length + 1}`, count: 0, id: uuid.v4().toString() },
+      {
+        name: `Task ${tasks.length + 1}`,
+        count: 0,
+        id: uuid.v4().toString(),
+        editing: false,
+      },
     ];
     storeData(newTasks);
     setTasks(newTasks);
@@ -106,19 +114,22 @@ export default function App() {
             </Text>
           </View>
         ) : (
-          <FlatList
-            data={tasks}
-            renderItem={({ item }) => (
-              <Task
-                task={item}
-                onDeleteTask={onDelete}
-                onIncrement={onIncrement}
-                onDecrement={onDecrement}
-                onEditTask={onNameChange}
-              />
-            )}
-            keyExtractor={(item) => item.id}
-          />
+          <KeyboardAvoidingView behavior="position">
+            <ScrollView>
+              {tasks.map((task) => {
+                return (
+                  <Task
+                    task={task}
+                    onDeleteTask={onDelete}
+                    onIncrement={onIncrement}
+                    onDecrement={onDecrement}
+                    onEditTask={onNameChange}
+                    key={task.id}
+                  />
+                );
+              })}
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
         <TouchableOpacity
           style={{

@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
+} from "react-native";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 
@@ -22,18 +28,33 @@ export default function Task({
   };
   return (
     <View
-      style={{
-        flex: 1,
-        flexDirection: "row",
-        marginVertical: 10,
-        marginHorizontal: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        borderRadius: 4,
-        borderWidth: 1,
-        borderColor: "#e1e1e1",
-        backgroundColor: "#efefef",
-      }}
+      style={
+        !editing
+          ? {
+              flex: 1,
+              flexDirection: "row",
+              marginVertical: 10,
+              marginHorizontal: 10,
+              paddingVertical: 10,
+              paddingHorizontal: 10,
+              borderRadius: 4,
+              borderWidth: 1,
+              borderColor: "#e1e1e1",
+              backgroundColor: "#efefef",
+            }
+          : {
+              flex: 1,
+              flexDirection: "row",
+              marginVertical: 10,
+              marginHorizontal: 10,
+              paddingVertical: 10,
+              paddingHorizontal: 10,
+              borderRadius: 4,
+              borderWidth: 1,
+              borderColor: "#e1e1e1",
+              backgroundColor: "#2e4057",
+            }
+      }
     >
       <View
         style={{
@@ -54,6 +75,10 @@ export default function Task({
                 value={newName}
                 onChangeText={onNameChange}
                 onSubmitEditing={onSave}
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                }}
               />
             </View>
           ) : (
@@ -84,7 +109,11 @@ export default function Task({
                 }}
                 onPress={() => setEditing(false)}
               >
-                <MaterialIcons name="cancel" size={22} color="black" />
+                <MaterialIcons
+                  name="cancel"
+                  size={22}
+                  color={editing ? "white" : "black"}
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -94,7 +123,11 @@ export default function Task({
                 }}
                 onPress={onSave}
               >
-                <FontAwesome6 name="square-check" size={22} color="black" />
+                <FontAwesome6
+                  name="square-check"
+                  size={22}
+                  color={editing ? "white" : "black"}
+                />
               </TouchableOpacity>
             </View>
           ) : (
@@ -107,7 +140,11 @@ export default function Task({
               }}
               onPress={() => setEditing(true)}
             >
-              <MaterialIcons name="edit-note" size={22} color="black" />
+              <MaterialIcons
+                name="edit-note"
+                size={22}
+                color={editing ? "white" : "black"}
+              />
             </TouchableOpacity>
           )}
         </View>
@@ -129,7 +166,11 @@ export default function Task({
             }}
             onPress={() => onDeleteTask(task.id)}
           >
-            <FontAwesome6 name="trash-can" size={24} color="red" />
+            <FontAwesome6
+              name="trash-can"
+              size={24}
+              color={editing ? "white" : "red"}
+            />
           </TouchableOpacity>
 
           <View
@@ -150,7 +191,11 @@ export default function Task({
             onPress={() => onDecrement(task.id)}
             disabled={task.count < 1}
           >
-            <FontAwesome6 name="minus" size={24} color="black" />
+            <FontAwesome6
+              name="minus"
+              size={24}
+              color={editing ? "white" : "black"}
+            />
           </TouchableOpacity>
           <View
             style={{
@@ -170,7 +215,11 @@ export default function Task({
             onPress={() => onIncrement(task.id)}
             disabled={task.count >= 99}
           >
-            <FontAwesome6 name="add" size={24} color="black" />
+            <FontAwesome6
+              name="add"
+              size={24}
+              color={editing ? "white" : "black"}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -181,7 +230,15 @@ export default function Task({
           alignSelf: "center",
         }}
       >
-        <Text style={{ fontSize: 40 }}>{task.count}</Text>
+        <Text
+          style={
+            editing
+              ? { fontSize: 40, color: "white" }
+              : { fontSize: 40, color: "black" }
+          }
+        >
+          {task.count}
+        </Text>
       </View>
     </View>
   );
